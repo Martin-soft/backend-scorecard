@@ -7,7 +7,7 @@
 <title>Auditoría de Backend</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&family=Spline+Sans+Mono:wght@400..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Spline+Sans+Mono:wght@400..600&display=swap">
 <style>
   :root {
     --bg: #F7FAF8;
@@ -85,7 +85,7 @@
   }
   :root {
     --f-ui: "Archivo", "Segoe UI", system-ui, sans-serif;
-    --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-serif: "Archivo", "Segoe UI", system-ui, sans-serif;
     --f-mono: "Spline Sans Mono", ui-monospace, Consolas, monospace;
   }
   * { box-sizing: border-box; }
@@ -155,7 +155,7 @@
   .sread { font: 600 1.45rem var(--f-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
   .dim-head { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
   .dim-name { font: 700 1rem var(--f-ui); margin: 0; }
-  .dim-q { font-style: italic; color: var(--muted); margin: 0.35rem 0 0.65rem; font-size: 0.95rem; max-width: 65ch; }
+  .dim-q { color: var(--muted); margin: 0.35rem 0 0.65rem; font-size: 0.95rem; max-width: 65ch; }
   .bands { margin: 0 0 0.35rem; }
   .bands p { margin: 0.18rem 0; font-size: 0.84rem; line-height: 1.5; color: var(--muted); max-width: 72ch; }
   .bands b {
@@ -208,20 +208,25 @@
   }
   .intro { font-size: 0.93rem; color: var(--muted); margin: -0.2rem 0 1.1rem; max-width: 68ch; }
 
-  .calc-in { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.6rem; margin-bottom: 1.3rem; }
-  .ledger { background: var(--panel); border-radius: 8px; padding: 0.55rem 0.95rem 0.4rem; }
-  .lline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; padding: 0.4rem 0 0.1rem; }
-  .llabel { font: 600 0.8rem var(--f-ui); letter-spacing: 0.02em; white-space: nowrap; }
+  .calc-in { display: flex; flex-direction: column; gap: 1.15rem; margin-bottom: 1.4rem; }
+  .cg-title { font: 600 0.66rem var(--f-ui); letter-spacing: 0.11em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.55rem; }
+  .cg-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1.6rem; }
+  .ledger { background: var(--panel); border-radius: 8px; padding: 0.8rem 1.1rem 0.9rem; }
+  .litem { padding: 0.55rem 0 0.6rem; }
+  .litem + .litem { border-top: 1px solid var(--line); }
+  .lline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; }
+  .llabel { font: 600 0.84rem var(--f-ui); letter-spacing: 0.02em; white-space: nowrap; }
   .lfill { flex: 1; border-bottom: 2px dotted var(--line-strong); transform: translateY(-0.3em); min-width: 2rem; }
-  .lamt { font: 600 1.05rem var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--accent); }
-  .lnote { margin: 0 0 0.45rem; font: 400 0.76rem var(--f-mono); color: var(--muted); text-align: right; }
+  .lamt { font: 600 1.1rem var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--accent); }
+  .lsub { display: flex; align-items: baseline; gap: 1rem; margin-top: 0.3rem; }
+  .lnote { flex: 1; margin: 0; font: 400 0.76rem var(--f-mono); color: var(--muted); text-align: right; }
   .lgroup {
     display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
     font: 600 0.64rem var(--f-ui); letter-spacing: 0.09em; text-transform: uppercase;
     color: var(--muted); margin: 0.9rem 0 0.1rem; padding-top: 0.6rem; border-top: 1px solid var(--line);
   }
   .ledger > .lgroup:first-child { margin-top: 0.1rem; padding-top: 0.15rem; border-top: 0; }
-  .honesty { font-size: 0.85rem; color: var(--muted); margin-top: 0.9rem; max-width: 72ch; }
+  .honesty { font-size: 0.85rem; color: var(--muted); margin-top: 0.9rem; }
   .pct {
     font: 500 0.66rem var(--f-mono); color: var(--muted);
     border: 1px solid var(--line-strong); border-radius: 999px;
@@ -300,7 +305,7 @@
     .block { padding: 1.1rem 1rem 1.2rem; }
     .dim { grid-template-columns: 2.7rem 1fr; column-gap: 0.7rem; }
     .lamt { font-size: 0.95rem; }
-    .calc-in { grid-template-columns: 1fr; }
+    .cg-fields { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .chip, .ins, .gapbtn, .util { transition: background-color 0.12s, border-color 0.12s, color 0.12s; }
@@ -325,28 +330,49 @@
   <section class="block">
     <h2>El dinero sobre la mesa</h2>
     <div class="calc-in">
-      <label class="flabel">Ven tus historias de IG (promedio)
-        <input id="c-stories" type="number" min="0" placeholder="8000"></label>
-      <label class="flabel">Abren tus emails (personas)
-        <input id="c-mails" type="number" min="0" placeholder="3000"></label>
-      <label class="flabel">Compradores (te compraron cualquier producto o servicio)
-        <input id="c-buyers" type="number" min="0" placeholder="400"></label>
-      <label class="flabel">Mentoría / programa high-ticket (USD)
-        <input id="c-ticket" type="number" min="0" placeholder="1500"></label>
-      <label class="flabel">Lista caliente para una reapertura (grupos de WhatsApp, emails recolectados)
-        <input id="c-list" type="number" min="0" placeholder="500"></label>
-      <label class="flabel">Membresía (USD/mes)
-        <input id="c-price" type="number" min="0" placeholder="49"></label>
+      <div class="calc-group">
+        <p class="cg-title">Audiencia comprometida</p>
+        <div class="cg-fields">
+          <label class="flabel">Views de tus historias de IG (promedio)
+            <input id="c-stories" type="number" min="0" placeholder="8000"></label>
+          <label class="flabel">Aperturas de email (personas)
+            <input id="c-mails" type="number" min="0" placeholder="3000"></label>
+        </div>
+      </div>
+      <div class="calc-group">
+        <p class="cg-title">Tus listas</p>
+        <div class="cg-fields">
+          <label class="flabel">Compradores (te compraron cualquier producto o servicio)
+            <input id="c-buyers" type="number" min="0" placeholder="400"></label>
+          <label class="flabel">Lista caliente para una reapertura (grupos de WhatsApp, emails recolectados)
+            <input id="c-list" type="number" min="0" placeholder="500"></label>
+        </div>
+      </div>
+      <div class="calc-group">
+        <p class="cg-title">Precios</p>
+        <div class="cg-fields">
+          <label class="flabel">Membresía (USD/mes)
+            <input id="c-price" type="number" min="0" placeholder="49"></label>
+          <label class="flabel">Mentoría / programa high-ticket (USD)
+            <input id="c-ticket" type="number" min="0" placeholder="1500"></label>
+        </div>
+      </div>
     </div>
     <div class="ledger">
       <p class="lgroup">Recurrente (USD/mes)</p>
-      <div class="lline"><span class="llabel">Membresía potencial</span><span class="pct">0,5–2% de los comprometidos</span><span class="lfill"></span><span class="lamt" id="r-mrr">—</span></div>
-      <p class="lnote" id="n-mrr"></p>
-      <div class="lline"><span class="llabel">Por ventana de relanzamiento</span><span class="pct">6–10% de la lista caliente</span><span class="lfill"></span><span class="lamt" id="r-launch">—</span></div>
-      <p class="lnote" id="n-launch"></p>
+      <div class="litem">
+        <div class="lline"><span class="llabel">Membresía potencial</span><span class="lfill"></span><span class="lamt" id="r-mrr">—</span></div>
+        <div class="lsub"><span class="pct">0,5–2% de los comprometidos</span><span class="lnote" id="n-mrr"></span></div>
+      </div>
+      <div class="litem">
+        <div class="lline"><span class="llabel">Por ventana de relanzamiento</span><span class="lfill"></span><span class="lamt" id="r-launch">—</span></div>
+        <div class="lsub"><span class="pct">6–10% de la lista caliente</span><span class="lnote" id="n-launch"></span></div>
+      </div>
       <p class="lgroup">Única vez (USD)</p>
-      <div class="lline"><span class="llabel">High-ticket potencial</span><span class="pct">2–5% de los compradores</span><span class="lfill"></span><span class="lamt" id="r-ht">—</span></div>
-      <p class="lnote" id="n-ht"></p>
+      <div class="litem">
+        <div class="lline"><span class="llabel">High-ticket potencial</span><span class="lfill"></span><span class="lamt" id="r-ht">—</span></div>
+        <div class="lsub"><span class="pct">2–5% de los compradores</span><span class="lnote" id="n-ht"></span></div>
+      </div>
     </div>
     <p class="honesty">Rangos del mercado hispano real, nunca promesas: los porcentajes de cada línea son los que se observan operando bien (y una reapertura con prueba gratis de 7 días convierte 30–40% de quienes la activan). Lo típico es construir $1–10K/mes de recurrente; una comunidad de 300–800 miembros pagos ya es top 10%. Números reales, no los de Instagram.</p>
   </section>
