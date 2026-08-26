@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Auditoría de Backend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&family=Spline+Sans+Mono:wght@400..600&display=swap">
+<style>
+  :root {
+    --bg: #F7FAF8;
+    --surface: #FFFFFF;
+    --panel: #EEF3EF;
+    --ink: #1A231E;
+    --muted: #5D6A63;
+    --line: #E2E7E3;
+    --line-strong: #B9C2BB;
+    --accent: #0B5C40;
+    --on-accent: #FFFFFF;
+    --warn: #8F5A0B;
+    --warn-bg: #F8F1E2;
+    --low: #A63A26;
+    --mid: #8F5A0B;
+    --high: #0B5C40;
+    --tier-g: #1F8A4C;
+    --tier-b: #2456C4;
+    --tier-p: #6D3FBF;
+    --accent-soft: #E3F0EA;
+    --low-soft: #F7E7E2;
+    --mid-soft: #F6ECDA;
+    --high-soft: #E3F0EA;
+    --shadow: 0 1px 3px rgba(26,35,30,0.06), 0 6px 18px rgba(26,35,30,0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1412;
+      --surface: #131A16;
+      --panel: #1A221D;
+      --ink: #E5EBE6;
+      --muted: #8EA095;
+      --line: #242E27;
+      --line-strong: #3A463E;
+      --accent: #48C094;
+      --on-accent: #0C1310;
+      --warn: #DFA045;
+      --warn-bg: #2A2312;
+      --low: #E0715A;
+      --mid: #DFA045;
+      --high: #48C094;
+      --tier-g: #3FBF77;
+      --tier-b: #6E9BFF;
+      --tier-p: #A986F2;
+      --accent-soft: #1A342A;
+      --low-soft: #3A241E;
+      --mid-soft: #372B17;
+      --high-soft: #1A342A;
+      --shadow: 0 1px 3px rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1412;
+    --surface: #131A16;
+    --panel: #1A221D;
+    --ink: #E5EBE6;
+    --muted: #8EA095;
+    --line: #242E27;
+    --line-strong: #3A463E;
+    --accent: #48C094;
+    --on-accent: #0C1310;
+    --warn: #DFA045;
+    --warn-bg: #2A2312;
+    --low: #E0715A;
+    --mid: #DFA045;
+    --high: #48C094;
+    --tier-g: #3FBF77;
+    --tier-b: #6E9BFF;
+    --tier-p: #A986F2;
+    --accent-soft: #1A342A;
+    --low-soft: #3A241E;
+    --mid-soft: #372B17;
+    --high-soft: #1A342A;
+    --shadow: 0 1px 3px rgba(0,0,0,0.45);
+  }
+  :root {
+    --f-ui: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-mono: "Spline Sans Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--f-serif);
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+    padding: 2.4rem 1.1rem 9.5rem;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  /* ---- masthead ---- */
+  .spec {
+    font: 600 0.66rem/1.4 var(--f-ui);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.5rem;
+  }
+  h1 {
+    font-family: var(--f-ui);
+    font-weight: 780;
+    font-stretch: 115%;
+    text-transform: uppercase;
+    letter-spacing: 0.015em;
+    font-size: clamp(1.55rem, 4.2vw, 2.25rem);
+    line-height: 1.05;
+    margin: 0 0 0.7rem;
+    text-wrap: balance;
+  }
+  .lede { color: var(--muted); font-size: 0.98rem; max-width: 62ch; margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.9rem 2rem; margin: 1.5rem 0 0; }
+  .flabel {
+    display: flex; flex-direction: column; gap: 0.35rem;
+    font: 600 0.64rem/1.3 var(--f-ui);
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+  }
+  input {
+    border: 0; border-bottom: 1.5px solid var(--line-strong);
+    background: transparent; color: var(--ink);
+    padding: 0.3rem 0.1rem; border-radius: 0;
+    font: 500 0.95rem var(--f-ui);
+  }
+  input[type="number"] { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+  input:focus-visible { outline: none; border-bottom-color: var(--accent); box-shadow: 0 1.5px 0 var(--accent); }
+  .meta input { min-width: 10.5rem; }
+
+  /* ---- dimensions ---- */
+  #dims {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow); padding: 0 1.4rem; margin-top: 2rem;
+  }
+  .dim {
+    display: grid; grid-template-columns: 3.4rem 1fr; column-gap: 1.1rem;
+    padding: 1.35rem 0 1.5rem;
+  }
+  .dim + .dim { border-top: 1px solid var(--line); }
+  .rail { display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-start; }
+  .dnum {
+    font: 700 0.72rem var(--f-ui); letter-spacing: 0.07em;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 0.14rem 0.45rem; border-radius: 5px;
+  }
+  .sread { font: 600 1.45rem var(--f-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+  .dim-head { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+  .dim-name { font: 700 1rem var(--f-ui); margin: 0; }
+  .dim-q { font-style: italic; color: var(--muted); margin: 0.35rem 0 0.65rem; font-size: 0.95rem; max-width: 65ch; }
+  .bands { margin: 0 0 0.35rem; }
+  .bands p { margin: 0.18rem 0; font-size: 0.84rem; line-height: 1.5; color: var(--muted); max-width: 72ch; }
+  .bands b {
+    font: 600 0.74rem var(--f-mono); font-variant-numeric: tabular-nums;
+    margin-right: 0.45rem; white-space: nowrap;
+    padding: 0.05rem 0.4rem; border-radius: 4px;
+  }
+  .bands b.low { color: var(--low); background: var(--low-soft); }
+  .bands b.mid { color: var(--mid); background: var(--mid-soft); }
+  .bands b.high { color: var(--high); background: var(--high-soft); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.7rem; }
+  .chip {
+    width: 2.45rem; height: 2.3rem;
+    border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink);
+    font: 500 0.9rem var(--f-mono); font-variant-numeric: tabular-nums;
+    cursor: pointer; border-radius: 7px;
+  }
+  .chip:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .gapbtn {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 0.45rem;
+    border: 1px solid var(--line-strong); background: transparent; color: var(--muted);
+    font: 600 0.66rem var(--f-ui); letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.4rem 0.65rem; border-radius: 6px; cursor: pointer;
+  }
+  .gbox { width: 0.7rem; height: 0.7rem; border: 1.5px solid currentColor; border-radius: 2.5px; }
+  .gapbtn:hover { border-color: var(--muted); color: var(--ink); }
+  .gapbtn[aria-pressed="true"] { color: var(--warn); border-color: var(--warn); background: var(--warn-bg); }
+  .gapbtn[aria-pressed="true"] .gbox { background: var(--warn); border-color: var(--warn); }
+  .gapbtn:focus-visible, .ins:focus-visible, .util:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .gate-note {
+    border-left: 3px solid var(--warn); background: var(--warn-bg);
+    padding: 0.6rem 0.85rem; font-size: 0.85rem; margin: 0.8rem 0 0; max-width: 65ch;
+    border-radius: 0 8px 8px 0;
+  }
+  .gate-note strong { font-family: var(--f-ui); font-size: 0.8rem; }
+
+  /* ---- sections ---- */
+  .block {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow); margin-top: 1.6rem; padding: 1.3rem 1.4rem 1.5rem;
+  }
+  h2 {
+    font: 700 0.78rem var(--f-ui); letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 0.9rem;
+  }
+  .intro { font-size: 0.93rem; color: var(--muted); margin: -0.2rem 0 1.1rem; max-width: 68ch; }
+
+  .calc-in { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.6rem; margin-bottom: 1.3rem; }
+  .ledger { background: var(--panel); border-radius: 8px; padding: 0.55rem 0.95rem 0.4rem; }
+  .lline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; padding: 0.4rem 0 0.1rem; }
+  .llabel { font: 600 0.8rem var(--f-ui); letter-spacing: 0.02em; white-space: nowrap; }
+  .lfill { flex: 1; border-bottom: 2px dotted var(--line-strong); transform: translateY(-0.3em); min-width: 2rem; }
+  .lamt { font: 600 1.05rem var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--accent); }
+  .lnote { margin: 0 0 0.45rem; font: 400 0.76rem var(--f-mono); color: var(--muted); text-align: right; }
+  .lgroup {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    font: 600 0.64rem var(--f-ui); letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--muted); margin: 0.9rem 0 0.1rem; padding-top: 0.6rem; border-top: 1px solid var(--line);
+  }
+  .ledger > .lgroup:first-child { margin-top: 0.1rem; padding-top: 0.15rem; border-top: 0; }
+  .honesty { font-size: 0.85rem; color: var(--muted); margin-top: 0.9rem; max-width: 72ch; }
+  .pct {
+    font: 500 0.66rem var(--f-mono); color: var(--muted);
+    border: 1px solid var(--line-strong); border-radius: 999px;
+    padding: 0.06rem 0.5rem; white-space: nowrap;
+  }
+  .closepara p { margin: 0.55rem 0 0; }
+  .closepara .neto { font: 500 0.8rem var(--f-mono); letter-spacing: 0.01em; }
+  .dim.locked { opacity: 0.4; }
+  .dim.locked .dim-q, .dim.locked .bands, .dim.locked .chips, .dim.locked .gate-note, .dim.locked .gapbtn { display: none; }
+
+  .field { display: flex; flex-direction: column; gap: 0.35rem; max-width: 34rem;
+    font: 600 0.64rem/1.4 var(--f-ui); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+  .closepara {
+    border-left: 3px solid var(--accent); background: var(--accent-soft);
+    padding: 0.85rem 1.05rem; font-size: 0.93rem; margin-top: 1rem; max-width: 68ch;
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* ---- insumos ---- */
+  .ins-rows { display: flex; flex-direction: column; gap: 0.5rem; }
+  .ins {
+    display: flex; gap: 0.85rem; align-items: flex-start; width: 100%; text-align: left;
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    padding: 0.85rem 1rem; cursor: pointer; border-radius: 10px; font-family: inherit;
+  }
+  .ins:hover { border-color: var(--line-strong); background: var(--panel); }
+  .ins[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .ins.ins-g { border-left: 3px solid var(--tier-g); }
+  .ins.ins-b { border-left: 3px solid var(--tier-b); }
+  .ins.ins-p { border-left: 3px solid var(--tier-p); }
+  .ins-radio { width: 0.95rem; height: 0.95rem; border-radius: 50%; border: 1.5px solid var(--line-strong); flex: none; margin-top: 0.18rem; position: relative; }
+  .ins[aria-checked="true"] .ins-radio { border-color: var(--accent); }
+  .ins[aria-checked="true"] .ins-radio::after { content: ""; position: absolute; inset: 2.5px; border-radius: 50%; background: var(--accent); }
+  .dot { width: 0.68rem; height: 0.68rem; border-radius: 50%; display: inline-block; flex: none; margin-top: 0.32rem; }
+  .dot.g { background: var(--tier-g); } .dot.b { background: var(--tier-b); } .dot.p { background: var(--tier-p); }
+  .dot.inline { margin: 0 0.3rem -0.03rem 0; }
+  .ins-name { font: 700 0.9rem var(--f-ui); display: block; }
+  .ins-name small { font: 600 0.72rem var(--f-mono); color: var(--muted); margin-left: 0.45rem; }
+  .ins-desc { font: 400 0.84rem/1.55 var(--f-serif); color: var(--muted); display: block; margin-top: 0.2rem; }
+  .chosen { font: 500 0.88rem var(--f-ui); margin: 1rem 0 0; }
+  .chosen strong { font-weight: 700; }
+
+  footer { margin-top: 2.6rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 0.8rem; }
+
+  /* ---- tally bar ---- */
+  .totalbar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: var(--surface); border-top: 2px solid var(--accent);
+    box-shadow: 0 -4px 16px rgba(15, 25, 20, 0.08);
+    padding: 0.65rem 1.1rem; z-index: 10;
+  }
+  .totalbar .inner { max-width: 880px; margin: 0 auto; display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
+  .copy-warn {
+    max-width: 880px; margin: 0 auto 0.55rem;
+    font: 600 0.78rem/1.45 var(--f-ui); color: var(--warn);
+    background: var(--warn-bg); border-left: 3px solid var(--warn);
+    border-radius: 0 8px 8px 0; padding: 0.45rem 0.75rem;
+  }
+  .total-num { font: 600 1.5rem var(--f-mono); font-variant-numeric: tabular-nums; color: var(--accent); }
+  .total-num small { font: 600 0.78rem var(--f-ui); color: var(--muted); letter-spacing: 0.02em; }
+  .bandlab { display: inline-flex; align-items: center; gap: 0.45rem; font: 700 0.78rem var(--f-ui); letter-spacing: 0.03em; }
+  .bandlab::before { content: ""; width: 0.62rem; height: 0.62rem; background: currentColor; flex: none; }
+  .bandlab.low { color: var(--low); } .bandlab.mid { color: var(--mid); }
+  .bandlab.high { color: var(--high); } .bandlab.gate { color: var(--warn); }
+  .band-desc { font: 400 0.8rem var(--f-serif); color: var(--muted); flex: 1; min-width: 14rem; }
+  .actions { display: flex; gap: 0.4rem; }
+  .util {
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink);
+    font: 600 0.68rem var(--f-ui); letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.5rem 0.8rem; border-radius: 6px; cursor: pointer;
+  }
+  .util:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+  @media (max-width: 640px) {
+    #dims { padding: 0 1rem; }
+    .block { padding: 1.1rem 1rem 1.2rem; }
+    .dim { grid-template-columns: 2.7rem 1fr; column-gap: 0.7rem; }
+    .lamt { font-size: 0.95rem; }
+    .calc-in { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .chip, .ins, .gapbtn, .util { transition: background-color 0.12s, border-color 0.12s, color 0.12s; }
+  }
+</style>
+<script>try{var t=localStorage.getItem("auditoria-backend-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="spec">Instrumento de diagnóstico · 10 dimensiones · escala 0 a 10</p>
+    <h1>Auditoría de Backend</h1>
+    <p class="lede">En esta auditoría vamos a puntuar juntos qué tan sólido es el motor detrás de tu marca: cada número se apoya en un hecho y lo ponemos entre los dos, así que si algo no te representa lo corregimos ahí mismo. Al final, el diagnóstico es tuyo.</p>
+    <div class="meta">
+      <label class="flabel">Nombre <input id="pname" type="text" autocomplete="off"></label>
+      <label class="flabel">Fecha <input id="pdate" type="text" autocomplete="off"></label>
+    </div>
+  </header>
+
+  <div id="dims"></div>
+
+  <section class="block">
+    <h2>El dinero sobre la mesa</h2>
+    <div class="calc-in">
+      <label class="flabel">Ven tus historias de IG (promedio)
+        <input id="c-stories" type="number" min="0" placeholder="8000"></label>
+      <label class="flabel">Abren tus emails (personas)
+        <input id="c-mails" type="number" min="0" placeholder="3000"></label>
+      <label class="flabel">Compradores (te compraron cualquier producto o servicio)
+        <input id="c-buyers" type="number" min="0" placeholder="400"></label>
+      <label class="flabel">Mentoría / programa high-ticket (USD)
+        <input id="c-ticket" type="number" min="0" placeholder="1500"></label>
+      <label class="flabel">Lista caliente para una reapertura (grupos de WhatsApp, emails recolectados)
+        <input id="c-list" type="number" min="0" placeholder="500"></label>
+      <label class="flabel">Membresía (USD/mes)
+        <input id="c-price" type="number" min="0" placeholder="49"></label>
+    </div>
+    <div class="ledger">
+      <p class="lgroup">Recurrente (USD/mes)</p>
+      <div class="lline"><span class="llabel">Membresía potencial</span><span class="pct">0,5–2% de los comprometidos</span><span class="lfill"></span><span class="lamt" id="r-mrr">—</span></div>
+      <p class="lnote" id="n-mrr"></p>
+      <div class="lline"><span class="llabel">Por ventana de relanzamiento</span><span class="pct">6–10% de la lista caliente</span><span class="lfill"></span><span class="lamt" id="r-launch">—</span></div>
+      <p class="lnote" id="n-launch"></p>
+      <p class="lgroup">Única vez (USD)</p>
+      <div class="lline"><span class="llabel">High-ticket potencial</span><span class="pct">2–5% de los compradores</span><span class="lfill"></span><span class="lamt" id="r-ht">—</span></div>
+      <p class="lnote" id="n-ht"></p>
+    </div>
+    <p class="honesty">Rangos del mercado hispano real, nunca promesas: los porcentajes de cada línea son los que se observan operando bien (y una reapertura con prueba gratis de 7 días convierte 30–40% de quienes la activan). Lo típico es construir $1–10K/mes de recurrente; una comunidad de 300–800 miembros pagos ya es top 10%. Números reales, no los de Instagram.</p>
+  </section>
+
+  <section class="block">
+    <h2>Línea base: lo que vamos a operar, hoy</h2>
+    <label class="field">Facturación mensual actual de lo que vamos a operar (USD)
+      <input id="c-base" type="number" min="0" placeholder="0"></label>
+    <div class="closepara" id="closepara">
+      La línea base cubre <strong>solo lo que vamos a operar</strong>: si el acuerdo es la comunidad, es lo que la comunidad factura hoy. Tu programa y todo lo que quede fuera del acuerdo no entra acá ni en el variable.
+      <p>La propuesta tiene dos números: un <strong>fijo mensual</strong> y un <strong>variable sobre el neto</strong> que crezca por encima de esta línea base que acabamos de documentar juntos.</p>
+      <p class="neto">neto = cobrado − reembolsos − contracargos − comisiones de plataforma − procesamiento de pago − impuestos</p>
+      <p><strong>Nada más se descuenta.</strong> Si lo que operamos no crece por encima de esta base, el variable no corre.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Tu parte: el nivel de presencia</h2>
+    <p class="intro">Nosotros operamos todo, pero tu comunidad compra tu cara y tu criterio, y eso no se delega. Elige el nivel que puedas sostener un trimestre entero, no tu mejor mes. La propuesta se dimensiona a este nivel. Subir se puede cuando quieras; bajar recalibra el plan.</p>
+    <div class="ins-rows" id="ins-rows" role="radiogroup" aria-label="Nivel de presencia"></div>
+    <p class="chosen">Nivel elegido: <strong id="ins-chosen">a definir en la llamada</strong></p>
+    <p class="honesty">La versión con garantía por escrito pide nivel <span class="dot b inline"></span>Estándar o superior. El nivel elegido queda por escrito en el acuerdo; el plan y sus metas se dimensionan sobre ese nivel, nunca sobre la aspiración.</p>
+  </section>
+
+  <footer>
+    Auditoría de backend · Los rangos salen de datos públicos del mercado hispano de comunidades de pago (2026). Diagnóstico, no promesa.
+  </footer>
+</div>
+
+<div class="totalbar">
+  <p class="copy-warn" id="copy-warn" hidden></p>
+  <div class="inner">
+    <div class="total-num"><span id="t-num">0</span><small> /100 · <span id="t-count">0</span>/10 puntuadas</small></div>
+    <span class="bandlab high" id="t-band">—</span>
+    <span class="band-desc" id="t-desc">Puntúa las 10 dimensiones para ver el diagnóstico.</span>
+    <div class="actions">
+      <button class="util" id="btn-view" type="button">Ver todas</button>
+      <button class="util" id="btn-theme" type="button">Modo oscuro</button>
+      <button class="util" id="btn-copy" type="button">Copiar resumen</button>
+      <button class="util" id="btn-reset" type="button">Reiniciar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DIMS = [
+  { n:1, name:"Oferta: la escalera de valor",
+    q:"¿Qué puede comprarte hoy un seguidor? ¿Y qué puede comprar después de esa primera compra? Si hay membresía: ¿a qué precio lanzaste y a qué precio está hoy?",
+    low:"Solo un producto suelto (curso, ebook) o nada. Sin high-ticket, sin recurrencia.",
+    mid:"Producto de entrada o high-ticket ocasional; sin membresía. O membresía congelada en el precio de lanzamiento, el patrón más común del mercado: se lanza barato para llenar y nunca se sube.",
+    high:"Escalera completa: entrada + membresía ($20–60/mes, con precio que sube por ventanas hacia su precio real) + high-ticket ($800–3.000) bien posicionados." },
+  { n:2, name:"Recurrencia de ingresos",
+    q:"De tu facturación del mes pasado, ¿qué porcentaje llega aunque no lances ni publiques?",
+    low:"0–10% recurrente: cada mes arranca en cero, ingresos en picos de lanzamiento.",
+    mid:"10–40% recurrente: hay membresía o comunidad, pero estancada y el churn se come lo que entra.",
+    high:"Más del 40% recurrente y creciendo." },
+  { n:3, name:"Monetización de compradores",
+    q:"De los que ya te compraron, ¿cuántos volvieron a comprar? ¿Qué les ofreces después?",
+    low:"No se sabe, o no hay nada para ofrecer después. La lista de compradores se está enfriando.",
+    mid:"Recompra ocasional, sin sistema: la mentoría se vende persiguiendo uno a uno.",
+    high:"Camino post-compra definido (ascenso a membresía/mentoría) y medido. Un comprador tiene 10–30x más probabilidad de volver a comprar." },
+  { n:4, name:"Captación al backend: el funnel",
+    q:"¿Cuál es el camino de un seguidor nuevo a miembro pago? Paso por paso.",
+    low:"Link in bio a un producto y nada más. Sin captura de mail, WhatsApp ni DM.",
+    mid:"Lead magnet o lista de correo con uso irregular; nada alimenta el backend sistemáticamente.",
+    high:"Funnel activo (challenge, DM keyword, webinar) que suma miembros o agenda llamadas cada semana." },
+  { n:5, name:"Cobro y rails de pago",
+    q:"¿Cómo te paga tu audiencia?",
+    low:"Checkout solo tarjeta/USD para audiencia LATAM (≈40% de fallos en suscripciones), sin cuotas, moneda que se devalúa.",
+    mid:"Rails parciales (algo de Mercado Pago / Hotmart), sin cuotas o mal configurados.",
+    high:"Checkout local (cuotas 3–12, métodos locales), moneda protegida, cobro recurrente sano." },
+  { n:6, name:"Onboarding y activación",
+    q:"¿Qué le pasa a un miembro nuevo en sus primeros 7 días?",
+    low:"Paga y queda solo: 'acá está el link del grupo' y nada más.",
+    mid:"Bienvenida genérica (un mail automático); sin primer logro, sin contacto personal.",
+    high:"Secuencia de bienvenida (WhatsApp + mail), primer logro en 48h, presentación en la comunidad." },
+  { n:7, name:"Retención y dinámicas",
+    q:"¿Cuánta gente se va por mes? ¿Qué haces para que se queden? ¿Y cuándo fue la última vez que abriste puertas o hiciste una ventana de prueba?",
+    low:"Churn desconocido; comunidad sin ritmo o abandonada. Se lanzó una vez y nunca se volvieron a abrir puertas.",
+    mid:"Churn aproximado; algún evento 'cuando se puede'; sin rescate de inactivos ni reaperturas desde el lanzamiento.",
+    high:"Churn medido <8%/mes, dinámicas mensuales (challenge, llamadas), rescate activo y reaperturas cada 1–3 meses. Sin aire fresco entrando, hasta la comunidad viva se apaga. Con operación fuerte un miembro dura 12+ meses; sin ella, 3–6." },
+  { n:8, name:"Audiencia monetizable", gate:true,
+    q:"Los hechos: views vs seguidores, apertura de tus emails, estado del inbox.",
+    low:"Views/seguidores <3%, apertura <15% o sin lista, DMs quietos. La audiencia no está respondiendo hoy.",
+    mid:"Views/seguidores 3–10%, apertura 15–30%, algo de movimiento en DMs.",
+    high:"Views/seguidores >10%, o apertura >30%, o inbox activo, y compradores existentes." },
+  { n:9, name:"Números y sistemas",
+    q:"¿Cuánto es tu MRR hoy? ¿Tu churn? ¿Cuántos miembros o alumnos activos tienes?",
+    low:"No se sabe; todo en la cabeza y en chats; sin CRM ni tracking.",
+    mid:"Planillas sueltas; se llega a los números con esfuerzo.",
+    high:"Dashboard con MRR / churn / engagement; decisiones con datos." },
+  { n:10, name:"Dependencia del dueño",
+    q:"La última vez que te fuiste una semana, ¿qué pasó con el negocio?",
+    low:"Todo se frena o explota; el dueño responde, cobra, entrega y apaga incendios (30+ h/semana en operación).",
+    mid:"Hay pedazos delegados (editor, CM) pero la comunidad y las ventas siguen colgando del dueño.",
+    high:"El negocio corre una semana solo; el dueño está en contenido y producto." }
+];
+
+const INSUMOS = [
+  { key:"minimo", cls:"g", emoji:"🟢", name:"Mínimo", hours:"~3–4 h/mes",
+    desc:"1 sesión de grabación por lotes (2h) · 1 live/mes · 1 ventana de lanzamiento por trimestre · audios de respuesta 15 min/semana · aprobaciones en 72h" },
+  { key:"estandar", cls:"b", emoji:"🔵", name:"Estándar", hours:"~6–8 h/mes",
+    desc:"1 sesión de lotes (3–4h) · 2–4 lives/mes · lanzamiento cada 6–8 semanas · 30 min/semana en la comunidad · aprobaciones en 48h" },
+  { key:"protagonista", cls:"p", emoji:"🟣", name:"Protagonista", hours:"12 h+/mes",
+    desc:"2 sesiones de lotes/mes · lives semanales · lanzamiento mensual posible · presencia diaria breve · aprobaciones en 24h" }
+];
+
+const KEY = "auditoria-backend-v1";
+let state = { scores:{}, gaps:{}, fields:{} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch(e) {}
+
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+
+const dimsRoot = document.getElementById("dims");
+DIMS.forEach(d => {
+  const sec = document.createElement("section");
+  sec.className = "dim";
+  sec.dataset.n = d.n;
+  sec.innerHTML = `
+    <div class="rail">
+      <span class="dnum">D${d.n}</span>
+      <span class="sread" id="sr-${d.n}">·</span>
+    </div>
+    <div class="dim-main">
+      <div class="dim-head">
+        <h3 class="dim-name">${d.name}</h3>
+        <button class="gapbtn" type="button" data-gap="${d.n}" aria-pressed="false"><span class="gbox"></span>Potencial fuga</button>
+      </div>
+      <p class="dim-q">${d.q}</p>
+      <div class="bands">
+        <p><b class="low">0–3</b>${d.low}</p>
+        <p><b class="mid">4–6</b>${d.mid}</p>
+        <p><b class="high">7–10</b>${d.high}</p>
+      </div>
+      <div class="chips" role="group" aria-label="Puntaje D${d.n}">
+        ${Array.from({length:11},(_,i)=>`<button class="chip" type="button" data-dim="${d.n}" data-v="${i}" aria-pressed="false">${i}</button>`).join("")}
+      </div>
+      ${d.gate ? `<p class="gate-note"><strong>Esta dimensión es la puerta.</strong> Todo lo que construyamos se apoya en una audiencia que responde; si hoy está fría, el primer paso del plan es reactivarla.</p>` : ""}
+    </div>
+  `;
+  dimsRoot.appendChild(sec);
+});
+
+const insRoot = document.getElementById("ins-rows");
+INSUMOS.forEach(t => {
+  const b = document.createElement("button");
+  b.className = `ins ins-${t.cls}`;
+  b.type = "button";
+  b.setAttribute("role", "radio");
+  b.setAttribute("aria-checked", "false");
+  b.dataset.ins = t.key;
+  b.innerHTML = `
+    <span class="ins-radio"></span>
+    <span class="dot ${t.cls}"></span>
+    <span class="ins-body">
+      <span class="ins-name">${t.name}<small>${t.hours}</small></span>
+      <span class="ins-desc">${t.desc}</span>
+    </span>
+  `;
+  insRoot.appendChild(b);
+});
+
+function bandFor(total, scored, gateLow){
+  if (gateLow) return { cls:"gate", lab:"Puerta cerrada", desc:"Con la audiencia sin responder (D8 ≤ 3), la prioridad hoy es reactivar el engagement antes de construir el backend." };
+  if (scored < 10) return { cls:"mid", lab:"En curso", desc:"Puntúa las 10 dimensiones para ver el diagnóstico." };
+  if (total >= 70) return { cls:"high", lab:"Backend sólido (70–100)", desc:"La base está. El foco es crecer y capturar lo que queda sobre la mesa." };
+  if (total >= 40) return { cls:"mid", lab:"Backend débil (40–69)", desc:"Hay piezas, pero el motor pierde plata en las brechas marcadas. Arreglar las 3 clave + operación continua." };
+  return { cls:"low", lab:"Backend inexistente (15–39)", desc:"La oportunidad más grande: audiencia viva sin motor detrás. Construir de cero + operar." };
+}
+
+function refresh(){
+  document.querySelectorAll(".chip").forEach(ch => {
+    const on = state.scores[ch.dataset.dim] !== undefined && String(state.scores[ch.dataset.dim]) === ch.dataset.v;
+    ch.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  document.querySelectorAll(".gapbtn").forEach(b => {
+    b.setAttribute("aria-pressed", state.gaps[b.dataset.gap] ? "true" : "false");
+  });
+  DIMS.forEach(d => {
+    const el = document.getElementById(`sr-${d.n}`);
+    el.textContent = state.scores[d.n] !== undefined ? state.scores[d.n] : "·";
+  });
+  let unlocked = true;
+  DIMS.forEach(d => {
+    const sec = document.querySelector(`.dim[data-n="${d.n}"]`);
+    const show = state.showAll || unlocked || state.scores[d.n] !== undefined;
+    sec.classList.toggle("locked", !show);
+    if (state.scores[d.n] === undefined) unlocked = false;
+  });
+  document.getElementById("btn-view").textContent = state.showAll ? "Una por una" : "Ver todas";
+  document.querySelectorAll(".ins").forEach(b => {
+    b.setAttribute("aria-checked", state.insumo === b.dataset.ins ? "true" : "false");
+  });
+  const chosen = INSUMOS.find(t => t.key === state.insumo);
+  document.getElementById("ins-chosen").textContent = chosen ? `${chosen.name} (${chosen.hours})` : "a definir en la llamada";
+  const vals = Object.values(state.scores);
+  const total = vals.reduce((a,b)=>a+b,0);
+  const scored = vals.length;
+  const gateLow = state.scores[8] !== undefined && state.scores[8] <= 3;
+  document.getElementById("t-num").textContent = total;
+  document.getElementById("t-count").textContent = scored;
+  const band = bandFor(total, scored, gateLow);
+  const bl = document.getElementById("t-band");
+  bl.className = "bandlab " + band.cls;
+  bl.textContent = band.lab;
+  document.getElementById("t-desc").textContent = band.desc;
+  if (copyArmed && missingItems().length === 0) {
+    clearTimeout(copyArmed); copyArmed = null;
+    warnEl.hidden = true;
+    document.getElementById("btn-copy").textContent = "Copiar resumen";
+  }
+  calc();
+  save();
+}
+
+function fmt(n){ return "$" + Math.round(n).toLocaleString("en-US"); }
+function setLine(amtId, noteId, amt, note){
+  document.getElementById(amtId).textContent = amt;
+  document.getElementById(noteId).textContent = note;
+}
+function calc(){
+  const stories = +document.getElementById("c-stories").value || 0;
+  const mails = +document.getElementById("c-mails").value || 0;
+  const aud = Math.max(stories, mails);
+  const price = +document.getElementById("c-price").value || 0;
+  const buyers = +document.getElementById("c-buyers").value || 0;
+  const ticket = +document.getElementById("c-ticket").value || 0;
+  const list = +document.getElementById("c-list").value || 0;
+
+  const mrr = (aud && price) ? { lo: aud*0.005*price, hi: aud*0.02*price } : null;
+  const launch = (list && price) ? { lo: list*0.06*price, hi: list*0.10*price } : null;
+  const ht = (buyers && ticket) ? { lo: buyers*0.02*ticket, hi: buyers*0.05*ticket } : null;
+
+  if (mrr) {
+    setLine("r-mrr", "n-mrr", `${fmt(mrr.lo)}–${fmt(mrr.hi)}/mes`, `${Math.round(aud*0.005)}–${Math.round(aud*0.02)} miembros × ${fmt(price)} · sobre ${aud.toLocaleString("en-US")} comprometidos (el mayor de los dos campos; el otro es upside)`);
+  } else setLine("r-mrr", "n-mrr", "—", "");
+  if (launch) {
+    setLine("r-launch", "n-launch", `${fmt(launch.lo)}–${fmt(launch.hi)}/mes nuevos`, `${Math.round(list*0.06)}–${Math.round(list*0.10)} miembros × ${fmt(price)} · lo típico: reabrir cada 1–3 meses`);
+  } else setLine("r-launch", "n-launch", "—", "");
+  if (ht) {
+    setLine("r-ht", "n-ht", `${fmt(ht.lo)}–${fmt(ht.hi)}`, `${Math.round(buyers*0.02)}–${Math.round(buyers*0.05)} ventas × ${fmt(ticket)}`);
+  } else setLine("r-ht", "n-ht", "—", "");
+}
+
+document.addEventListener("click", e => {
+  const chip = e.target.closest(".chip");
+  if (chip) {
+    const d = chip.dataset.dim, v = +chip.dataset.v;
+    if (state.scores[d] === v) delete state.scores[d]; else state.scores[d] = v;
+    refresh(); return;
+  }
+  const gap = e.target.closest(".gapbtn");
+  if (gap) {
+    const d = gap.dataset.gap;
+    if (state.gaps[d]) delete state.gaps[d];
+    else if (Object.keys(state.gaps).length < 3) state.gaps[d] = true;
+    refresh(); return;
+  }
+  const ins = e.target.closest(".ins");
+  if (ins) {
+    state.insumo = state.insumo === ins.dataset.ins ? undefined : ins.dataset.ins;
+    refresh(); return;
+  }
+});
+
+["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-base"].forEach(id => {
+  const el = document.getElementById(id);
+  if (state.fields[id] !== undefined) el.value = state.fields[id];
+  el.addEventListener("input", () => { state.fields[id] = el.value; refresh(); });
+});
+if (!document.getElementById("pdate").value) {
+  document.getElementById("pdate").value = new Date().toLocaleDateString("es-AR");
+  state.fields["pdate"] = document.getElementById("pdate").value;
+}
+
+document.getElementById("btn-view").addEventListener("click", () => {
+  state.showAll = !state.showAll;
+  refresh();
+});
+
+let resetArmed = null;
+document.getElementById("btn-reset").addEventListener("click", () => {
+  const btn = document.getElementById("btn-reset");
+  if (!resetArmed) {
+    btn.textContent = "¿Borrar todo?";
+    resetArmed = setTimeout(() => { resetArmed = null; btn.textContent = "Reiniciar"; }, 3000);
+    return;
+  }
+  clearTimeout(resetArmed); resetArmed = null; btn.textContent = "Reiniciar";
+  state = { scores:{}, gaps:{}, fields:{} };
+  ["pname","c-stories","c-mails","c-buyers","c-list","c-base","c-price","c-ticket"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("pdate").value = new Date().toLocaleDateString("es-AR");
+  refresh();
+});
+
+function missingItems(){
+  const f = state.fields;
+  const out = [];
+  if (!((f["pname"] || "").trim())) out.push("el nombre");
+  const unscored = DIMS.filter(d => state.scores[d.n] === undefined).map(d => "D" + d.n);
+  if (unscored.length) out.push(unscored.length === 10 ? "las 10 dimensiones sin puntuar" : unscored.join(", ") + " sin puntuar");
+  if (!((f["c-stories"] || "").trim()) && !((f["c-mails"] || "").trim())) out.push("views de historias o aperturas de email");
+  if (!((f["c-price"] || "").trim())) out.push("el precio de membresía");
+  if (!((f["c-base"] || "").trim())) out.push("la línea base");
+  if (!state.insumo) out.push("el nivel de presencia");
+  return out;
+}
+
+const warnEl = document.getElementById("copy-warn");
+let copyArmed = null;
+document.getElementById("btn-copy").addEventListener("click", () => {
+  const btnCopy = document.getElementById("btn-copy");
+  const missing = missingItems();
+  if (missing.length && !copyArmed) {
+    warnEl.textContent = "Antes de copiar, falta: " + missing.join(" · ") + ".";
+    warnEl.hidden = false;
+    btnCopy.textContent = "Copiar igual";
+    copyArmed = setTimeout(() => {
+      copyArmed = null; warnEl.hidden = true; btnCopy.textContent = "Copiar resumen";
+    }, 8000);
+    return;
+  }
+  if (copyArmed) { clearTimeout(copyArmed); copyArmed = null; warnEl.hidden = true; }
+  const f = state.fields;
+  const total = Object.values(state.scores).reduce((a,b)=>a+b,0);
+  const chosen = INSUMOS.find(t => t.key === state.insumo);
+  const lines = [
+    `AUDITORÍA DE BACKEND · ${f["pname"]||"(sin nombre)"} · ${f["pdate"]||""}`,
+    `Total: ${total}/100 (${Object.keys(state.scores).length}/10 puntuadas)`,
+    ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}`),
+    `Comprometidos: historias ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"}`,
+    `Nivel de presencia: ${chosen ? `${chosen.emoji} ${chosen.name} (${chosen.hours})` : "—"}`,
+    `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`
+  ];
+  const text = lines.join("\n");
+  const ok = () => {
+    const b = document.getElementById("btn-copy");
+    b.textContent = "✓ Copiado"; setTimeout(()=>b.textContent="Copiar resumen", 1600);
+  };
+  const fallback = () => {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); ok(); } catch(e) {}
+    ta.remove();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(ok, fallback);
+  } else fallback();
+});
+
+const THEME_KEY = "auditoria-backend-theme";
+const themeBtn = document.getElementById("btn-theme");
+let theme = null;
+try { theme = localStorage.getItem(THEME_KEY) || null; } catch(e) {}
+function isDark(){
+  if (theme) return theme === "dark";
+  return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
+function applyTheme(){
+  if (theme) document.documentElement.setAttribute("data-theme", theme);
+  else document.documentElement.removeAttribute("data-theme");
+  themeBtn.textContent = isDark() ? "Modo claro" : "Modo oscuro";
+}
+themeBtn.addEventListener("click", () => {
+  theme = isDark() ? "light" : "dark";
+  try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
+  applyTheme();
+});
+applyTheme();
+
+refresh();
+</script>
+</body>
+</html>
