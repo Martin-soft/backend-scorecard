@@ -209,8 +209,9 @@
   .intro { font-size: 0.93rem; color: var(--muted); margin: -0.2rem 0 1.1rem; max-width: 68ch; }
 
   .calc-in { display: flex; flex-direction: column; gap: 1.15rem; margin-bottom: 1.4rem; }
-  .cg-title { font: 600 0.66rem var(--f-ui); letter-spacing: 0.11em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.55rem; }
+  .cg-title { font: 700 0.72rem var(--f-ui); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); margin: 0 0 0.6rem; }
   .cg-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1.6rem; }
+  .cg-fields .flabel { text-transform: none; letter-spacing: 0.01em; font: 500 0.8rem/1.45 var(--f-ui); }
   .ledger { background: var(--panel); border-radius: 8px; padding: 0.8rem 1.1rem 0.9rem; }
   .litem { padding: 0.55rem 0 0.6rem; }
   .litem + .litem { border-top: 1px solid var(--line); }
@@ -222,8 +223,8 @@
   .lnote { flex: 1; margin: 0; font: 400 0.76rem var(--f-mono); color: var(--muted); text-align: right; }
   .lgroup {
     display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
-    font: 600 0.64rem var(--f-ui); letter-spacing: 0.09em; text-transform: uppercase;
-    color: var(--muted); margin: 0.9rem 0 0.1rem; padding-top: 0.6rem; border-top: 1px solid var(--line);
+    font: 700 0.72rem var(--f-ui); letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); margin: 0.9rem 0 0.1rem; padding-top: 0.6rem; border-top: 1px solid var(--line);
   }
   .ledger > .lgroup:first-child { margin-top: 0.1rem; padding-top: 0.15rem; border-top: 0; }
   .honesty { font-size: 0.85rem; color: var(--muted); margin-top: 0.9rem; }
@@ -238,7 +239,7 @@
   .dim.locked .dim-q, .dim.locked .bands, .dim.locked .chips, .dim.locked .gate-note, .dim.locked .gapbtn { display: none; }
 
   .field { display: flex; flex-direction: column; gap: 0.35rem; max-width: 34rem;
-    font: 600 0.64rem/1.4 var(--f-ui); letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+    font: 500 0.8rem/1.45 var(--f-ui); letter-spacing: 0.01em; color: var(--muted); }
   .closepara {
     border-left: 3px solid var(--accent); background: var(--accent-soft);
     padding: 0.85rem 1.05rem; font-size: 0.93rem; margin-top: 1rem; max-width: 68ch;
