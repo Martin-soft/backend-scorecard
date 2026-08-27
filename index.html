@@ -348,8 +348,10 @@
         <div class="cg-fields">
           <label class="flabel">Compradores (te compraron cualquier producto o servicio)
             <input id="c-buyers" type="number" min="0" placeholder="400"></label>
-          <label class="flabel">Lista caliente para una reapertura (grupos de WhatsApp, emails recolectados)
+          <label class="flabel">Lista caliente para una reapertura (compraron alguna vez, o levantaron la mano en los últimos 90 días: llamada, pedido de precio, respuesta a una campaña)
             <input id="c-list" type="number" min="0" placeholder="500"></label>
+          <label class="flabel">Base de recontacto total (todo lo contactable: emails recolectados, números de WhatsApp, grupos; es alcance, no multiplica)
+            <input id="c-reach" type="number" min="0" placeholder="20000"></label>
         </div>
       </div>
       <div class="calc-group">
@@ -371,6 +373,10 @@
       <div class="litem">
         <div class="lline"><span class="llabel">Por ventana de relanzamiento</span><span class="lfill"></span><span class="lamt" id="r-launch">—</span></div>
         <div class="lsub"><span class="pct">6–10% de la lista caliente</span><span class="lnote" id="n-launch"></span></div>
+      </div>
+      <div class="litem">
+        <div class="lline"><span class="llabel">Base de recontacto</span><span class="lfill"></span><span class="lamt" id="r-reach">—</span></div>
+        <div class="lsub"><span class="pct">alcance, no multiplicador</span><span class="lnote" id="n-reach"></span></div>
       </div>
       <p class="lgroup">Única vez (USD)</p>
       <div class="litem">
@@ -605,6 +611,7 @@ function calc(){
   const buyers = +document.getElementById("c-buyers").value || 0;
   const ticket = +document.getElementById("c-ticket").value || 0;
   const list = +document.getElementById("c-list").value || 0;
+  const reach = +document.getElementById("c-reach").value || 0;
 
   const mrr = (aud && price) ? { lo: aud*0.005*price, hi: aud*0.02*price } : null;
   const launch = (list && price) ? { lo: list*0.06*price, hi: list*0.10*price } : null;
@@ -614,8 +621,13 @@ function calc(){
     setLine("r-mrr", "n-mrr", `${fmt(mrr.lo)}–${fmt(mrr.hi)}/mes`, `${Math.round(aud*0.005)}–${Math.round(aud*0.02)} miembros × ${fmt(price)} · sobre ${aud.toLocaleString("en-US")} comprometidos (el mayor de los dos campos; el otro es upside)`);
   } else setLine("r-mrr", "n-mrr", "—", "");
   if (launch) {
-    setLine("r-launch", "n-launch", `${fmt(launch.lo)}–${fmt(launch.hi)}/mes nuevos`, `${Math.round(list*0.06)}–${Math.round(list*0.10)} miembros × ${fmt(price)} · lo típico: reabrir cada 1–3 meses`);
+    let lnote = `${Math.round(list*0.06)}–${Math.round(list*0.10)} miembros × ${fmt(price)} · lo típico: reabrir cada 1–3 meses`;
+    if (buyers && list > buyers*3) lnote += ` · ojo: más de 3× tus compradores suele ser recontacto, no lista caliente; revisen el número juntos`;
+    setLine("r-launch", "n-launch", `${fmt(launch.lo)}–${fmt(launch.hi)}/mes nuevos`, lnote);
   } else setLine("r-launch", "n-launch", "—", "");
+  if (reach) {
+    setLine("r-reach", "n-reach", reach.toLocaleString("en-US") + " contactables", "llena las ventanas de arriba; lo que sume encima del cálculo es upside, no promesa");
+  } else setLine("r-reach", "n-reach", "—", "");
   if (ht) {
     setLine("r-ht", "n-ht", `${fmt(ht.lo)}–${fmt(ht.hi)}`, `${Math.round(buyers*0.02)}–${Math.round(buyers*0.05)} ventas × ${fmt(ticket)}`);
   } else setLine("r-ht", "n-ht", "—", "");
@@ -642,7 +654,7 @@ document.addEventListener("click", e => {
   }
 });
 
-["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-base"].forEach(id => {
+["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-reach","c-base"].forEach(id => {
   const el = document.getElementById(id);
   if (state.fields[id] !== undefined) el.value = state.fields[id];
   el.addEventListener("input", () => { state.fields[id] = el.value; refresh(); });
@@ -667,7 +679,7 @@ document.getElementById("btn-reset").addEventListener("click", () => {
   }
   clearTimeout(resetArmed); resetArmed = null; btn.textContent = "Reiniciar";
   state = { scores:{}, gaps:{}, fields:{} };
-  ["pname","c-stories","c-mails","c-buyers","c-list","c-base","c-price","c-ticket"].forEach(id => document.getElementById(id).value = "");
+  ["pname","c-stories","c-mails","c-buyers","c-list","c-reach","c-base","c-price","c-ticket"].forEach(id => document.getElementById(id).value = "");
   document.getElementById("pdate").value = new Date().toLocaleDateString("es-AR");
   refresh();
 });
@@ -707,7 +719,7 @@ document.getElementById("btn-copy").addEventListener("click", () => {
     `AUDITORÍA DE BACKEND · ${f["pname"]||"(sin nombre)"} · ${f["pdate"]||""}`,
     `Total: ${total}/100 (${Object.keys(state.scores).length}/10 puntuadas)`,
     ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}`),
-    `Comprometidos: historias ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"}`,
+    `Comprometidos: historias ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"} · Recontacto: ${f["c-reach"]||"—"}`,
     `Nivel de presencia: ${chosen ? `${chosen.emoji} ${chosen.name} (${chosen.hours})` : "—"}`,
     `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`
   ];
