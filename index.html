@@ -337,8 +337,8 @@
       <div class="calc-group">
         <p class="cg-title">Audiencia comprometida</p>
         <div class="cg-fields">
-          <label class="flabel">Views de tus historias de IG (promedio)
-            <input id="c-stories" type="number" min="0" placeholder="8000"></label>
+          <label class="flabel">Views de tus historias con CTA de negocio (no el promedio general: las views que valen son las del contenido que vende)
+            <input id="c-stories" type="number" min="0" placeholder="3000"></label>
           <label class="flabel">Aperturas de email (personas)
             <input id="c-mails" type="number" min="0" placeholder="3000"></label>
         </div>
@@ -384,7 +384,7 @@
         <div class="lsub"><span class="pct">2–5% de los compradores</span><span class="lnote" id="n-ht"></span></div>
       </div>
     </div>
-    <p class="honesty">Rangos del mercado hispano real, nunca promesas: los porcentajes de cada línea son los que se observan operando bien (y una reapertura con prueba gratis de 7 días convierte 30–40% de quienes la activan). Lo típico es construir $1–10K/mes de recurrente; una comunidad de 300–800 miembros pagos ya es top 10%. Números reales, no los de Instagram.</p>
+    <p class="honesty">Rangos del mercado hispano real, nunca promesas: los porcentajes de cada línea son los que se observan operando bien (y una reapertura con prueba gratis de 7 días convierte 30–40% de quienes la activan). Lo típico es construir $1–10K/mes de recurrente; una comunidad de 300–800 miembros pagos ya es top 10%. Números reales, no los de Instagram: las views que cuentan son las del contenido que vende, no el promedio.</p>
   </section>
 
   <section class="block">
@@ -465,10 +465,10 @@ const DIMS = [
     mid:"Churn aproximado; algún evento 'cuando se puede'; sin rescate de inactivos ni reaperturas desde el lanzamiento.",
     high:"Churn medido <8%/mes, dinámicas mensuales (challenge, llamadas), rescate activo y reaperturas cada 1–3 meses. Sin aire fresco entrando, hasta la comunidad viva se apaga. Con operación fuerte un miembro dura 12+ meses; sin ella, 3–6." },
   { n:8, name:"Audiencia monetizable", gate:true,
-    q:"Los hechos: views vs seguidores, apertura de tus emails, estado del inbox.",
-    low:"Views/seguidores <3%, apertura <15% o sin lista, DMs quietos. La audiencia no está respondiendo hoy.",
-    mid:"Views/seguidores 3–10%, apertura 15–30%, algo de movimiento en DMs.",
-    high:"Views/seguidores >10%, o apertura >30%, o inbox activo, y compradores existentes." },
+    q:"Los hechos, empezando por el inbox: ¿cuántas conversaciones nuevas por semana, cuántas responden de verdad y cuántas agendas salen? Después, views del contenido con CTA (no el promedio) y apertura de emails.",
+    low:"Inbox quieto (DMs sin movimiento o casi nadie responde), views con CTA <3% de los seguidores, apertura <15% o sin lista. La audiencia no está respondiendo hoy.",
+    mid:"Hay conversaciones pero casi todas las abre tu equipo y la respuesta es floja; views con CTA 3–10%; apertura 15–30%.",
+    high:"Inbox vivo: la gente responde semana a semana o escribe sola, views con CTA >10% o apertura >30%, y compradores existentes." },
   { n:9, name:"Números y sistemas",
     q:"¿Cuánto es tu MRR hoy? ¿Tu churn? ¿Cuántos miembros o alumnos activos tienes?",
     low:"No se sabe; todo en la cabeza y en chats; sin CRM ni tracking.",
@@ -690,7 +690,7 @@ function missingItems(){
   if (!((f["pname"] || "").trim())) out.push("el nombre");
   const unscored = DIMS.filter(d => state.scores[d.n] === undefined).map(d => "D" + d.n);
   if (unscored.length) out.push(unscored.length === 10 ? "las 10 dimensiones sin puntuar" : unscored.join(", ") + " sin puntuar");
-  if (!((f["c-stories"] || "").trim()) && !((f["c-mails"] || "").trim())) out.push("views de historias o aperturas de email");
+  if (!((f["c-stories"] || "").trim()) && !((f["c-mails"] || "").trim())) out.push("views con CTA o aperturas de email");
   if (!((f["c-price"] || "").trim())) out.push("el precio de membresía");
   if (!((f["c-base"] || "").trim())) out.push("la línea base");
   if (!state.insumo) out.push("el nivel de presencia");
@@ -719,7 +719,7 @@ document.getElementById("btn-copy").addEventListener("click", () => {
     `AUDITORÍA DE BACKEND · ${f["pname"]||"(sin nombre)"} · ${f["pdate"]||""}`,
     `Total: ${total}/100 (${Object.keys(state.scores).length}/10 puntuadas)`,
     ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}`),
-    `Comprometidos: historias ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"} · Recontacto: ${f["c-reach"]||"—"}`,
+    `Comprometidos: historias c/CTA ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"} · Recontacto: ${f["c-reach"]||"—"}`,
     `Nivel de presencia: ${chosen ? `${chosen.emoji} ${chosen.name} (${chosen.hours})` : "—"}`,
     `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`
   ];
