@@ -158,6 +158,15 @@
   .dim-head { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
   .dim-name { font: 700 1rem var(--f-ui); margin: 0; }
   .dim-q { color: var(--muted); margin: 0.35rem 0 0.65rem; font-size: 0.95rem; max-width: 65ch; }
+  .dim-q2 { color: var(--muted); margin: -0.3rem 0 0.7rem; font-size: 0.86rem; font-style: italic; max-width: 65ch; }
+  .fact { display: block; max-width: 65ch; margin: 0 0 0.75rem; }
+  .chips-label { margin: 0.55rem 0 0.2rem; font: 600 0.74rem var(--f-ui); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+  .close-steps { margin: 0; padding-left: 1.25rem; }
+  .close-steps li { margin: 0 0 1rem; max-width: 72ch; }
+  .close-steps .cs-title { display: block; font-weight: 600; margin-bottom: 0.3rem; }
+  .close-steps p { margin: 0.2rem 0 0.4rem; color: var(--muted); }
+  .close-steps textarea { display: block; width: 100%; box-sizing: border-box; font: inherit; margin-top: 0.3rem; }
+  .dim.locked .dim-q2, .dim.locked .fact, .dim.locked .chips-label { display: none; }
   .bands { margin: 0 0 0.35rem; }
   .bands p { margin: 0.18rem 0; font-size: 0.84rem; line-height: 1.5; color: var(--muted); max-width: 72ch; }
   .bands b {
@@ -407,6 +416,23 @@
     <p class="honesty">La versión con garantía por escrito pide nivel <span class="dot b inline"></span>Estándar o superior. El nivel elegido queda por escrito en el acuerdo; el plan y sus metas se dimensionan sobre ese nivel, nunca sobre la aspiración.</p>
   </section>
 
+  <section class="block">
+    <h2>Cierre</h2>
+    <ol class="close-steps">
+      <li><span class="cs-title">¿Quién más de tu círculo tendría que tener esta charla?</span>
+        <label class="flabel">Nombres <input id="c-ref" type="text" autocomplete="off" placeholder="con un nombre alcanza"></label></li>
+      <li><span class="cs-title">Lo que haríamos</span>
+        <p>Un arranque único para ordenar lo que hoy se escapa. Un fijo mensual por operarlo. Y un variable solo sobre el neto que crezca por encima de la línea base de arriba. Los números van por escrito.</p></li>
+      <li><span class="cs-title">Próximo contacto</span>
+        <div class="cg-fields">
+          <label class="flabel">Los números te llegan por escrito el <input id="c-when" type="text" autocomplete="off" placeholder="día"></label>
+          <label class="flabel">Lo revisamos <input id="c-next" type="text" autocomplete="off" placeholder="día y hora, o 'lo leés y me escribís'"></label>
+        </div></li>
+      <li><span class="cs-title">Números que quedaron de dos formas</span>
+        <textarea id="c-disputa" rows="2" placeholder="dato · versión A (quién) · versión B (quién). No se promedian: van por escrito con las dos versiones."></textarea></li>
+    </ol>
+  </section>
+
   <footer>
     Auditoría de backend · Los rangos salen de datos públicos del mercado hispano de comunidades de pago (2026). Diagnóstico, no promesa.
   </footer>
@@ -430,52 +456,62 @@
 <script>
 const DIMS = [
   { n:1, name:"Oferta: la escalera de valor",
-    q:"¿Qué puede comprarte hoy un seguidor? ¿Y qué puede comprar después de esa primera compra? Si hay membresía: ¿a qué precio lanzaste y a qué precio está hoy?",
+    q:"Te pregunto: hoy un seguidor tuyo, ¿qué te puede comprar? ¿Y después de esa primera compra, qué?",
+    q2:"Si hay membresía: ¿a qué precio la lanzaste y a qué precio está hoy?",
     low:"Solo un producto suelto (curso, ebook) o nada. Sin high-ticket, sin recurrencia.",
     mid:"Producto de entrada o high-ticket ocasional; sin membresía. O membresía congelada en el precio de lanzamiento, el patrón más común del mercado: se lanza barato para llenar y nunca se sube.",
     high:"Escalera completa: entrada + membresía ($20–60/mes, con precio que sube por ventanas hacia su precio real) + high-ticket ($800–3.000) bien posicionados." },
   { n:2, name:"Recurrencia de ingresos",
-    q:"De tu facturación del mes pasado, ¿qué porcentaje llega aunque no lances ni publiques?",
+    q:"Del mes pasado, ¿qué parte entró aunque no lanzaras ni publicaras?",
+    q2:"Si el mes que viene no hacés nada, ¿cuánto entra igual?",
     low:"0–10% recurrente: cada mes arranca en cero, ingresos en picos de lanzamiento.",
     mid:"10–40% recurrente: hay membresía o comunidad, pero estancada y el churn se come lo que entra.",
     high:"Más del 40% recurrente y creciendo." },
   { n:3, name:"Monetización de compradores",
-    q:"De los que ya te compraron, ¿cuántos volvieron a comprar? ¿Qué les ofreces después?",
+    q:"De los que ya te compraron, ¿cuántos volvieron a comprar? ¿Y hoy qué tienen para comprar después?",
+    q2:"¿Cuánta gente te pagó alguna vez, desde el día uno? ¿Y a los que se fueron, alguien les habló?",
     low:"No se sabe, o no hay nada para ofrecer después. La lista de compradores se está enfriando.",
     mid:"Recompra ocasional, sin sistema: la mentoría se vende persiguiendo uno a uno.",
     high:"Camino post-compra definido (ascenso a membresía/mentoría) y medido. Un comprador tiene 10–30x más probabilidad de volver a comprar." },
   { n:4, name:"Captación al backend: el funnel",
-    q:"¿Cuál es el camino de un seguidor nuevo a miembro pago? Paso por paso.",
+    q:"Alguien nuevo te descubre hoy: ¿qué le pasa, paso por paso, hasta que paga?",
+    q2:"¿Cuál es el camino de un seguidor nuevo a miembro? ¿Dónde se cae la mayoría?",
     low:"Link in bio a un producto y nada más. Sin captura de mail, WhatsApp ni DM.",
     mid:"Lead magnet o lista de correo con uso irregular; nada alimenta el backend sistemáticamente.",
     high:"Funnel activo (challenge, DM keyword, webinar) que suma miembros o agenda llamadas cada semana." },
   { n:5, name:"Cobro y rails de pago",
-    q:"¿Cómo te paga tu audiencia?",
+    q:"¿Cómo te paga tu audiencia hoy?",
+    q2:"¿Solo tarjeta? ¿En qué moneda? ¿Cuotas en el alto ticket? ¿Cuántos pagos se caen por mes?",
     low:"Checkout solo tarjeta/USD para audiencia LATAM (≈40% de fallos en suscripciones), sin cuotas, moneda que se devalúa.",
     mid:"Rails parciales (algo de Mercado Pago / Hotmart), sin cuotas o mal configurados.",
     high:"Checkout local (cuotas 3–12, métodos locales), moneda protegida, cobro recurrente sano." },
   { n:6, name:"Onboarding y activación",
-    q:"¿Qué le pasa a un miembro nuevo en sus primeros 7 días?",
+    q:"Entra alguien hoy, pagando o en prueba: ¿qué le pasa los primeros siete días? ¿Quién le habla?",
+    q2:"¿Qué recibe el día uno, y quién se lo manda?",
     low:"Paga y queda solo: 'acá está el link del grupo' y nada más.",
     mid:"Bienvenida genérica (un mail automático); sin primer logro, sin contacto personal.",
     high:"Secuencia de bienvenida (WhatsApp + mail), primer logro en 48h, presentación en la comunidad." },
   { n:7, name:"Retención y dinámicas",
-    q:"¿Cuánta gente se va por mes? ¿Qué haces para que se queden? ¿Y cuándo fue la última vez que abriste puertas o hiciste una ventana de prueba?",
+    q:"¿Cuánta gente se te va por mes? ¿Cancelan, o se les cae la tarjeta?",
+    q2:"¿Cuándo fue la última vez que abriste puertas o hiciste una prueba gratis? ¿Y la próxima?",
     low:"Churn desconocido; comunidad sin ritmo o abandonada. Se lanzó una vez y nunca se volvieron a abrir puertas.",
     mid:"Churn aproximado; algún evento 'cuando se puede'; sin rescate de inactivos ni reaperturas desde el lanzamiento.",
     high:"Churn medido <8%/mes, dinámicas mensuales (challenge, llamadas), rescate activo y reaperturas cada 1–3 meses. Sin aire fresco entrando, hasta la comunidad viva se apaga. Con operación fuerte un miembro dura 12+ meses; sin ella, 3–6." },
   { n:8, name:"Audiencia monetizable", gate:true,
-    q:"La pregunta de fondo: ¿cuánta gente aparece cuando pides algo? Se mide en tres lugares: el inbox (¿cuántas conversaciones nuevas por semana, y cuántas responden de verdad?), las views de tus historias con CTA y la apertura de tus emails.",
+    q:"Acá no medimos cuánta audiencia tenés: medimos cuánta aparece cuando pedís algo. Tres números, por separado: ¿cuánta gente te pagó alguna vez? ¿Cuántos levantaron la mano en los últimos 90 días? ¿Y una historia tuya pidiendo algo, cuántas views tiene?",
+    q2:"Y el inbox: de cada 100 conversaciones que se abren, ¿cuántas responden de verdad?",
     low:"Inbox quieto (DMs sin movimiento o casi nadie responde), views con CTA <3% de los seguidores, apertura <15% o sin lista. La audiencia no está respondiendo hoy.",
     mid:"Hay conversaciones pero casi todas las abre tu equipo y la respuesta es floja; views con CTA 3–10%; apertura 15–30%.",
     high:"Inbox vivo: la gente responde semana a semana o escribe sola, views con CTA >10% o apertura >30%, y compradores existentes." },
   { n:9, name:"Números y sistemas",
-    q:"¿Cuánto es tu MRR hoy? ¿Tu churn? ¿Cuántos miembros o alumnos activos tienes?",
+    q:"¿Cuánto entró el mes pasado, todo junto? ¿Y cuántos miembros activos hay hoy?",
+    q2:"¿Dónde mirás esos números: un panel, una planilla, o los sacás de la cabeza?",
     low:"No se sabe; todo en la cabeza y en chats; sin CRM ni tracking.",
     mid:"Planillas sueltas; se llega a los números con esfuerzo.",
     high:"Dashboard con MRR / churn / engagement; decisiones con datos." },
   { n:10, name:"Dependencia del dueño",
-    q:"La última vez que te fuiste una semana, ¿qué pasó con el negocio?",
+    q:"¿Cuándo fue la última vez que te fuiste una semana entera? ¿Qué pasó con el negocio mientras no estabas?",
+    q2:"¿Qué te encontraste al volver, y quién lo había resuelto?",
     low:"Todo se frena o explota; el dueño responde, cobra, entrega y apaga incendios (30+ h/semana en operación).",
     mid:"Hay pedazos delegados (editor, CM) pero la comunidad y las ventas siguen colgando del dueño.",
     high:"El negocio corre una semana solo; el dueño está en contenido y producto." }
@@ -512,11 +548,15 @@ DIMS.forEach(d => {
         <button class="gapbtn" type="button" data-gap="${d.n}" aria-pressed="false"><span class="gbox"></span>Potencial fuga</button>
       </div>
       <p class="dim-q">${d.q}</p>
+      <p class="dim-q2">Dicho de otra forma: ${d.q2}</p>
+      <label class="flabel fact">El hecho que sostiene la nota
+        <input id="h-${d.n}" type="text" autocomplete="off" placeholder="un número, una fecha o una conducta"></label>
       <div class="bands">
         <p><b class="low">0–3</b>${d.low}</p>
         <p><b class="mid">4–6</b>${d.mid}</p>
         <p><b class="high">7–10</b>${d.high}</p>
       </div>
+      <p class="chips-label">Tu nota, de 0 a 10. La ponés vos.</p>
       <div class="chips" role="group" aria-label="Puntaje D${d.n}">
         ${Array.from({length:11},(_,i)=>`<button class="chip" type="button" data-dim="${d.n}" data-v="${i}" aria-pressed="false">${i}</button>`).join("")}
       </div>
@@ -654,7 +694,9 @@ document.addEventListener("click", e => {
   }
 });
 
-["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-reach","c-base"].forEach(id => {
+const FIELD_IDS = ["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-reach","c-base",
+  "c-ref","c-when","c-next","c-disputa", ...DIMS.map(d => `h-${d.n}`)];
+FIELD_IDS.forEach(id => {
   const el = document.getElementById(id);
   if (state.fields[id] !== undefined) el.value = state.fields[id];
   el.addEventListener("input", () => { state.fields[id] = el.value; refresh(); });
@@ -679,7 +721,7 @@ document.getElementById("btn-reset").addEventListener("click", () => {
   }
   clearTimeout(resetArmed); resetArmed = null; btn.textContent = "Reiniciar";
   state = { scores:{}, gaps:{}, fields:{} };
-  ["pname","c-stories","c-mails","c-buyers","c-list","c-reach","c-base","c-price","c-ticket"].forEach(id => document.getElementById(id).value = "");
+  FIELD_IDS.filter(id => id !== "pdate").forEach(id => document.getElementById(id).value = "");
   document.getElementById("pdate").value = new Date().toLocaleDateString("es-AR");
   refresh();
 });
@@ -694,6 +736,8 @@ function missingItems(){
   if (!((f["c-price"] || "").trim())) out.push("el precio de membresía");
   if (!((f["c-base"] || "").trim())) out.push("la línea base");
   if (!state.insumo) out.push("el nivel de presencia");
+  if (!((f["c-ref"] || "").trim())) out.push("un referido");
+  if (!((f["c-next"] || "").trim())) out.push("el próximo contacto");
   return out;
 }
 
@@ -718,10 +762,12 @@ document.getElementById("btn-copy").addEventListener("click", () => {
   const lines = [
     `AUDITORÍA DE BACKEND · ${f["pname"]||"(sin nombre)"} · ${f["pdate"]||""}`,
     `Total: ${total}/100 (${Object.keys(state.scores).length}/10 puntuadas)`,
-    ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}`),
+    ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}${(f[`h-${d.n}`]||"").trim() ? ` · hecho: ${f[`h-${d.n}`].trim()}` : ""}`),
     `Comprometidos: historias c/CTA ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"} · Recontacto: ${f["c-reach"]||"—"}`,
     `Nivel de presencia: ${chosen ? `${chosen.emoji} ${chosen.name} (${chosen.hours})` : "—"}`,
-    `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`
+    `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`,
+    `Referidos: ${f["c-ref"]||"—"} · Números por escrito el: ${f["c-when"]||"—"} · Próximo contacto: ${f["c-next"]||"—"}`,
+    `EN DISPUTA: ${(f["c-disputa"]||"").trim() || "nada"}`
   ];
   const text = lines.join("\n");
   const ok = () => {
