@@ -159,14 +159,13 @@
   .dim-name { font: 700 1rem var(--f-ui); margin: 0; }
   .dim-q { color: var(--muted); margin: 0.35rem 0 0.65rem; font-size: 0.95rem; max-width: 65ch; }
   .dim-q2 { color: var(--muted); margin: -0.3rem 0 0.7rem; font-size: 0.86rem; font-style: italic; max-width: 65ch; }
-  .fact { display: block; max-width: 65ch; margin: 0 0 0.75rem; }
   .chips-label { margin: 0.55rem 0 0.2rem; font: 600 0.74rem var(--f-ui); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
   .close-steps { margin: 0; padding-left: 1.25rem; }
   .close-steps li { margin: 0 0 1rem; max-width: 72ch; }
   .close-steps .cs-title { display: block; font-weight: 600; margin-bottom: 0.3rem; }
   .close-steps p { margin: 0.2rem 0 0.4rem; color: var(--muted); }
   .close-steps textarea { display: block; width: 100%; box-sizing: border-box; font: inherit; margin-top: 0.3rem; }
-  .dim.locked .dim-q2, .dim.locked .fact, .dim.locked .chips-label { display: none; }
+  .dim.locked .dim-q2, .dim.locked .chips-label { display: none; }
   .bands { margin: 0 0 0.35rem; }
   .bands p { margin: 0.18rem 0; font-size: 0.84rem; line-height: 1.5; color: var(--muted); max-width: 72ch; }
   .bands b {
@@ -549,8 +548,6 @@ DIMS.forEach(d => {
       </div>
       <p class="dim-q">${d.q}</p>
       <p class="dim-q2">Dicho de otra forma: ${d.q2}</p>
-      <label class="flabel fact">El hecho que sostiene la nota
-        <input id="h-${d.n}" type="text" autocomplete="off" placeholder="un número, una fecha o una conducta"></label>
       <div class="bands">
         <p><b class="low">0–3</b>${d.low}</p>
         <p><b class="mid">4–6</b>${d.mid}</p>
@@ -695,7 +692,7 @@ document.addEventListener("click", e => {
 });
 
 const FIELD_IDS = ["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-reach","c-base",
-  "c-ref","c-when","c-next","c-disputa", ...DIMS.map(d => `h-${d.n}`)];
+  "c-ref","c-when","c-next","c-disputa"];
 FIELD_IDS.forEach(id => {
   const el = document.getElementById(id);
   if (state.fields[id] !== undefined) el.value = state.fields[id];
@@ -762,7 +759,7 @@ document.getElementById("btn-copy").addEventListener("click", () => {
   const lines = [
     `AUDITORÍA DE BACKEND · ${f["pname"]||"(sin nombre)"} · ${f["pdate"]||""}`,
     `Total: ${total}/100 (${Object.keys(state.scores).length}/10 puntuadas)`,
-    ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}${(f[`h-${d.n}`]||"").trim() ? ` · hecho: ${f[`h-${d.n}`].trim()}` : ""}`),
+    ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}`),
     `Comprometidos: historias c/CTA ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"} · Recontacto: ${f["c-reach"]||"—"}`,
     `Nivel de presencia: ${chosen ? `${chosen.emoji} ${chosen.name} (${chosen.hours})` : "—"}`,
     `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`,
