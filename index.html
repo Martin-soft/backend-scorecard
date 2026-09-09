@@ -160,11 +160,6 @@
   .dim-q { color: var(--muted); margin: 0.35rem 0 0.65rem; font-size: 0.95rem; max-width: 65ch; }
   .dim-q2 { color: var(--muted); margin: -0.3rem 0 0.7rem; font-size: 0.86rem; font-style: italic; max-width: 65ch; }
   .chips-label { margin: 0.55rem 0 0.2rem; font: 600 0.74rem var(--f-ui); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-  .close-steps { margin: 0; padding-left: 1.25rem; }
-  .close-steps li { margin: 0 0 1rem; max-width: 72ch; }
-  .close-steps .cs-title { display: block; font-weight: 600; margin-bottom: 0.3rem; }
-  .close-steps p { margin: 0.2rem 0 0.4rem; color: var(--muted); }
-  .close-steps textarea { display: block; width: 100%; box-sizing: border-box; font: inherit; margin-top: 0.3rem; }
   .dim.locked .dim-q2, .dim.locked .chips-label { display: none; }
   .bands { margin: 0 0 0.35rem; }
   .bands p { margin: 0.18rem 0; font-size: 0.84rem; line-height: 1.5; color: var(--muted); max-width: 72ch; }
@@ -413,23 +408,6 @@
     <div class="ins-rows" id="ins-rows" role="radiogroup" aria-label="Nivel de presencia"></div>
     <p class="chosen">Nivel elegido: <strong id="ins-chosen">a definir en la llamada</strong></p>
     <p class="honesty">La versión con garantía por escrito pide nivel <span class="dot b inline"></span>Estándar o superior. El nivel elegido queda por escrito en el acuerdo; el plan y sus metas se dimensionan sobre ese nivel, nunca sobre la aspiración.</p>
-  </section>
-
-  <section class="block">
-    <h2>Cierre</h2>
-    <ol class="close-steps">
-      <li><span class="cs-title">¿Quién más de tu círculo tendría que tener esta charla?</span>
-        <label class="flabel">Nombres <input id="c-ref" type="text" autocomplete="off" placeholder="con un nombre alcanza"></label></li>
-      <li><span class="cs-title">Lo que haríamos</span>
-        <p>Operamos tu comunidad como piso y como semillero de lo que vendes arriba: retención, cobros y el pase, medido. Un arranque único para ordenar lo que hoy se escapa. Un fijo mensual por operarlo. Y un variable solo sobre el neto que crezca por encima de la línea base de arriba. Los números van por escrito.</p></li>
-      <li><span class="cs-title">Próximo contacto</span>
-        <div class="cg-fields">
-          <label class="flabel">Los números te llegan por escrito el <input id="c-when" type="text" autocomplete="off" placeholder="día"></label>
-          <label class="flabel">Lo revisamos <input id="c-next" type="text" autocomplete="off" placeholder="día y hora, o 'lo leés y me escribís'"></label>
-        </div></li>
-      <li><span class="cs-title">Números que quedaron de dos formas</span>
-        <textarea id="c-disputa" rows="2" placeholder="dato · versión A (quién) · versión B (quién). No se promedian: van por escrito con las dos versiones."></textarea></li>
-    </ol>
   </section>
 
   <footer>
@@ -691,8 +669,7 @@ document.addEventListener("click", e => {
   }
 });
 
-const FIELD_IDS = ["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-reach","c-base",
-  "c-ref","c-when","c-next","c-disputa"];
+const FIELD_IDS = ["pname","pdate","c-stories","c-mails","c-price","c-buyers","c-ticket","c-list","c-reach","c-base"];
 FIELD_IDS.forEach(id => {
   const el = document.getElementById(id);
   if (state.fields[id] !== undefined) el.value = state.fields[id];
@@ -733,8 +710,6 @@ function missingItems(){
   if (!((f["c-price"] || "").trim())) out.push("el precio de membresía");
   if (!((f["c-base"] || "").trim())) out.push("la línea base");
   if (!state.insumo) out.push("el nivel de presencia");
-  if (!((f["c-ref"] || "").trim())) out.push("un referido");
-  if (!((f["c-next"] || "").trim())) out.push("el próximo contacto");
   return out;
 }
 
@@ -762,9 +737,7 @@ document.getElementById("btn-copy").addEventListener("click", () => {
     ...DIMS.map(d => `D${d.n} ${d.name}: ${state.scores[d.n] !== undefined ? state.scores[d.n] : "—"}${state.gaps[d.n] ? " ★ FUGA" : ""}`),
     `Comprometidos: historias c/CTA ${f["c-stories"]||"—"} · emails ${f["c-mails"]||"—"} · Compradores: ${f["c-buyers"]||"—"} · Lista caliente: ${f["c-list"]||"—"} · Recontacto: ${f["c-reach"]||"—"}`,
     `Nivel de presencia: ${chosen ? `${chosen.emoji} ${chosen.name} (${chosen.hours})` : "—"}`,
-    `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`,
-    `Referidos: ${f["c-ref"]||"—"} · Números por escrito el: ${f["c-when"]||"—"} · Próximo contacto: ${f["c-next"]||"—"}`,
-    `EN DISPUTA: ${(f["c-disputa"]||"").trim() || "nada"}`
+    `LÍNEA BASE (solo lo que se opera): $${f["c-base"]||"—"}/mes`
   ];
   const text = lines.join("\n");
   const ok = () => {
