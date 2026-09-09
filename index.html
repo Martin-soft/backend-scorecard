@@ -351,9 +351,9 @@
         <div class="cg-fields">
           <label class="flabel">Compradores (te compraron cualquier producto o servicio)
             <input id="c-buyers" type="number" min="0" placeholder="400"></label>
-          <label class="flabel">Lista caliente para una reapertura (compraron alguna vez, o levantaron la mano en los últimos 90 días: llamada, pedido de precio, respuesta a una campaña)
+          <label class="flabel">Lista caliente: los que ya te dijeron que quieren esto (te compraron algo alguna vez, o en los últimos 90 días pidieron el precio, empezaron la prueba, dejaron la tarjeta o se anotaron para entrar)
             <input id="c-list" type="number" min="0" placeholder="500"></label>
-          <label class="flabel">Base de recontacto total (todo lo contactable: emails recolectados, números de WhatsApp, grupos; es alcance, no multiplica)
+          <label class="flabel">Base de recontacto: los que te dieron su contacto y nada más (leads de anuncios, emails recolectados, grupos de WhatsApp, seguidores). Es alcance, no multiplica.
             <input id="c-reach" type="number" min="0" placeholder="20000"></label>
         </div>
       </div>
@@ -637,7 +637,7 @@ function calc(){
   } else setLine("r-mrr", "n-mrr", "—", "");
   if (launch) {
     let lnote = `${Math.round(list*0.06)}–${Math.round(list*0.10)} miembros × ${fmt(price)} · lo típico: reabrir cada 1–3 meses`;
-    if (buyers && list > buyers*3) lnote += ` · ojo: más de 3× tus compradores suele ser recontacto, no lista caliente; revisen el número juntos`;
+    if (buyers && list > buyers*3) lnote += ` · ojo: más de 3× tus compradores suele ser recontacto, no lista caliente. ¿Todos esos pidieron entrar, o solo te dieron su contacto?`;
     setLine("r-launch", "n-launch", `${fmt(launch.lo)}–${fmt(launch.hi)}/mes nuevos`, lnote);
   } else setLine("r-launch", "n-launch", "—", "");
   if (reach) {
