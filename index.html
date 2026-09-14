@@ -377,10 +377,6 @@
         <div class="lline"><span class="llabel">Por ventana de relanzamiento</span><span class="lfill"></span><span class="lamt" id="r-launch">—</span></div>
         <div class="lsub"><span class="pct">6–10% de la lista caliente</span><span class="lnote" id="n-launch"></span></div>
       </div>
-      <div class="litem">
-        <div class="lline"><span class="llabel">Base de recontacto</span><span class="lfill"></span><span class="lamt" id="r-reach">—</span></div>
-        <div class="lsub"><span class="pct">alcance, no multiplicador</span><span class="lnote" id="n-reach"></span></div>
-      </div>
       <p class="lgroup">Única vez (USD)</p>
       <div class="litem">
         <div class="lline"><span class="llabel">High-ticket potencial (el pase)</span><span class="lfill"></span><span class="lamt" id="r-ht">—</span></div>
@@ -433,7 +429,7 @@
 <script>
 const DIMS = [
   { n:1, name:"Oferta: la escalera de valor",
-    q:"Te pregunto: hoy un seguidor tuyo, ¿qué te puede comprar? ¿Y después de esa primera compra, qué?",
+    q:"Te pregunto: hoy un seguidor tuyo, ¿qué te puede comprar?",
     q2:"Si hay membresía: ¿a qué precio la lanzaste y a qué precio está hoy?",
     low:"Solo un producto suelto (curso, ebook) o nada. Sin high-ticket, sin recurrencia.",
     mid:"Producto de entrada o high-ticket ocasional; sin membresía. O membresía congelada en el precio de lanzamiento, el patrón más común del mercado: se lanza barato para llenar y nunca se sube.",
@@ -626,7 +622,6 @@ function calc(){
   const buyers = +document.getElementById("c-buyers").value || 0;
   const ticket = +document.getElementById("c-ticket").value || 0;
   const list = +document.getElementById("c-list").value || 0;
-  const reach = +document.getElementById("c-reach").value || 0;
 
   const mrr = (aud && price) ? { lo: aud*0.005*price, hi: aud*0.02*price } : null;
   const launch = (list && price) ? { lo: list*0.06*price, hi: list*0.10*price } : null;
@@ -640,9 +635,6 @@ function calc(){
     if (buyers && list > buyers*3) lnote += ` · ojo: más de 3× tus compradores suele ser recontacto, no lista caliente. ¿Todos esos pidieron entrar, o solo te dieron su contacto?`;
     setLine("r-launch", "n-launch", `${fmt(launch.lo)}–${fmt(launch.hi)}/mes nuevos`, lnote);
   } else setLine("r-launch", "n-launch", "—", "");
-  if (reach) {
-    setLine("r-reach", "n-reach", reach.toLocaleString("en-US") + " contactables", "llena las ventanas de arriba; lo que sume encima del cálculo es upside, no promesa");
-  } else setLine("r-reach", "n-reach", "—", "");
   if (ht) {
     setLine("r-ht", "n-ht", `${fmt(ht.lo)}–${fmt(ht.hi)}`, `${Math.round(buyers*0.02)}–${Math.round(buyers*0.05)} ventas × ${fmt(ticket)}`);
   } else setLine("r-ht", "n-ht", "—", "");
